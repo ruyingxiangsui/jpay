@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F0F0F0"
+    android:orientation="vertical" >
+
+     <TextView
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:background="@drawable/title_bar"
+        android:gravity="center"
+        android:text="@string/jiaoyi"
+        android:textColor="#ffffff"
+        android:textSize="20sp" />
+    
+    <Button
+        android:id="@+id/btn_huankuan"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/huankuan"
+        android:background="@drawable/info_center_item" 
+        android:layout_marginTop="15dp"/>
+
+    <Button
+        android:id="@+id/btn_shoukuan"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/info_center_item"
+        android:text="@string/shoukuan" 
+        android:layout_marginTop="15dp"/>
+
+</LinearLayout>

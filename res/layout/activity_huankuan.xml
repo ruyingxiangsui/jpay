@@ -1,0 +1,93 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+     <RelativeLayout 
+  			android:layout_width="fill_parent"
+  			android:layout_height="45dp"
+  			android:id="@+id/bar_huankuan" 
+  			android:background="@drawable/title_bar"
+  			android:layout_alignParentTop="true"
+  			android:gravity="center_vertical"  >
+  			
+         <Button
+            android:id="@+id/huankuan_back"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="@string/back"
+            android:textSize="14sp"
+            android:textColor="#fff"
+            android:background="@drawable/title_btn_back"
+		    />  
+         
+      		<TextView
+        		android:layout_width="wrap_content" 
+        		android:layout_height="wrap_content" 
+        		android:text="@string/huankuan"
+        		android:layout_centerInParent="true"
+        		android:textSize="20sp"		
+				android:textColor="#ffffff" /> 
+		</RelativeLayout>
+    
+    
+    <FrameLayout
+        android:id="@+id/huankuan_frame"
+        android:layout_width="380dp"
+        android:layout_height="242.25dp"
+        android:layout_gravity="center"
+        android:layout_below="@id/bar_huankuan"
+        android:layout_margin="20dp" >
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/card_title"
+            android:src="@drawable/card_background" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:clickable="true"
+            android:orientation="vertical"
+            android:padding="20dp" >
+
+            <TextView
+                android:id="@+id/card_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-condensed"
+                android:text=""
+                android:textSize="32sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/card_account_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:fontFamily="sans-serif"
+                android:textSize="18sp"
+                android:labelFor="@+id/card_account_field"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/et_huankuan_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-condensed"
+                android:inputType="number"
+                android:singleLine="true"
+                android:textSize="42sp"
+                android:textStyle="bold"
+                android:width="360dp" />
+        </LinearLayout>
+    </FrameLayout>
+    <Button android:id="@+id/confirm_huankuan"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/rechargebtn"
+        android:layout_below="@id/huankuan_frame"/>
+
+</RelativeLayout>
