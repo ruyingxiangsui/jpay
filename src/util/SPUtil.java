@@ -1,14 +1,12 @@
 package util;
 
-import java.util.UUID;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
+import application.JPayApplication;
 import engine.JPayEngine;
 import entity.Command;
-import entity.UserInfo;
+import entity.CurrentUser;
 
 public class SPUtil implements JPayEngine {
 
@@ -16,59 +14,40 @@ public class SPUtil implements JPayEngine {
 	 * 得到当前用户信息
 	 * 
 	 * */
-	public static UserInfo getCurrentUserInfo(Context c) {
-		SharedPreferences sp = c.getSharedPreferences(SP_CURRENT_ACCOUNT_INFO,
-				Activity.MODE_PRIVATE);
-		UserInfo uf = new UserInfo();
-		uf.setUserName(sp.getString(CURRENT_ACCOUNT_NAME, NULL));
-		return uf;
+	public static CurrentUser getCurrentUserInfo(JPayApplication app) {
+		return SPAdapter.getCurrentUserInfo(app);
 	}
 
 	/**
 	 * 设置当前用户信息
 	 * 
 	 * */
-	public static void setCurrentUserInfo(Context c, UserInfo uf) {
-		SharedPreferences sp = c.getSharedPreferences(SP_CURRENT_ACCOUNT_INFO,
-				Activity.MODE_PRIVATE);
-		SharedPreferences.Editor editor = sp.edit();
-		editor.putString(CURRENT_ACCOUNT_NAME, uf.getUserName());
-		editor.commit();
+	public static void setCurrentUserInfo(JPayApplication app, CurrentUser cu) {
+		SPAdapter.setCurrentUserInfo(app, cu);
 	}
 
 	/**
 	 * 退出
 	 * 
 	 * */
-	public static void logOut(Context c) {
-		SharedPreferences sp = c.getSharedPreferences(SP_CURRENT_ACCOUNT_INFO,
-				Activity.MODE_PRIVATE);
-		sp.edit().clear().commit();
+	public static void logOut(JPayApplication app) {
+		SPAdapter.logOut(app);;
 	}
 
 	/**
 	 * 获取用户的余额信息
 	 * */
-	public static int getAccountOverage(Context c, String account) {
-		return c.getSharedPreferences(account, Activity.MODE_PRIVATE).getInt(
-				ACCOUNT_OVERAGE, 0);
+	public static int getAccountOverage(JPayApplication app, String account) {
+		return SPAdapter.getAccountOverage(app, account);
 	}
 
 	/**
 	 * 更新余额信息
 	 * 
 	 * */
-	public static void updateAccountOverage(Context c, String account,
+	public static void updateAccountOverage(JPayApplication app, String account,
 			String type, int count) {
-		SharedPreferences sp = c.getSharedPreferences(account,
-				Activity.MODE_PRIVATE);
-		int over = sp.getInt(ACCOUNT_OVERAGE, 0);
-		if (type.equals(TRANS_TYPE_CASH) || type.equals(TRANS_TYPE_HUANKUAN)) {
-			count = (-1) * count;
-		}
-		SharedPreferences.Editor editor = sp.edit();
-		editor.putInt(ACCOUNT_OVERAGE, over + count);
-		editor.commit();
+		SPAdapter.updateAccountOverage(app, account, type, count);
 
 	}
 
@@ -76,45 +55,34 @@ public class SPUtil implements JPayEngine {
 	 * 更新密码
 	 * 
 	 * */
-	public static void updateAccountPass(Context c, String account, String pass) {
-		SharedPreferences sp = c.getSharedPreferences(account,
-				Activity.MODE_PRIVATE);
-		sp.edit().putString(ACCOUNT_PASS, pass).commit();
+	public static void updateAccountPass(JPayApplication app, String account, String pass) {
+		SPAdapter.updateAccountPass(app, account, pass);
 	}
 
 	/**
 	 * 验证本地支付密码
 	 * */
-	public static boolean checkAccountPass(Context c, String account,
+	public static boolean checkAccountPass(JPayApplication app, String account,
 			String pass) {
 
-		return c.getSharedPreferences(account, Activity.MODE_PRIVATE)
-				.getString(ACCOUNT_PASS, NULL).equals(pass);
+		return SPAdapter.checkAccountCTime(app, account);
 	}
 
 	/**
 	 * 每次更改数据库、xml文件时更新 内容为文件的ctime(文件内容或目录改变时也会修改ctime)
 	 * 
 	 * */
-	public static void updateCTime(Context c, String filepath) {
-		// 数据库的ctime
-		SharedPreferences sp = c.getSharedPreferences("files_ctime",
-				Activity.MODE_PRIVATE);
-		SharedPreferences.Editor editor = sp.edit();
-		editor.putString("db_ctime", "db_time_"
-				+ getFileCTime(c.getDatabasePath("table_trans")
-						.getAbsolutePath()));
-		editor.putString("sp_ctime", getFileCTime("") + "");
-		editor.commit();
+	public static void updateCTime(JPayApplication app, String filepath) {
+		SPAdapter.updateCTime(app, filepath);
 	}
 
 	/**
 	 * 核对当前用户的本地数据是否修改过
 	 * 
 	 * */
-	public static boolean checkAccountCTime(Context c, String account) {
+	public static boolean checkAccountCTime(JPayApplication app, String account) {
 
-		return false;
+		return SPAdapter.checkAccountCTime(app, account);
 	}
 
 	/**
@@ -122,72 +90,57 @@ public class SPUtil implements JPayEngine {
 	 * 
 	 * */
 	public static final String getFileCTime(String path) {
-		return "";
+		return SPAdapter.getFileCTime(path);
 	}
 
 	/**
-	 * 获取当前指令
+	 * 获取当前收款指令
 	 * 
 	 * */
-	public static Command getCommand(Context ctx) {
-
-		SharedPreferences sp = ctx.getSharedPreferences(getCurrentUserInfo(ctx)
-				.getUserName(), Activity.MODE_PRIVATE);
-		Command cmd = new Command();
-		cmd.setTransCode(sp.getString(COMMAND_TRANS_CODE, ""));
-		cmd.setHuanKuanCard(sp.getString(COMMAND_MYCARD, ""));
-		cmd.setShouKuanCard(sp.getString(COMMAND_YOURCARD, ""));
-		cmd.setTransCount(sp.getInt(COMMAND_TRANS_COUNT, 0));
-		cmd.setTransState(sp.getString(COMMAND_TRANS_STATE, ""));
-
-		return cmd;
+	public static Command getShouCommand(JPayApplication app) {
+		return SPAdapter.getShouCommand(app, getCurrentUserInfo(app).getUserName());
 	}
 
 	/**
-	 * 设置当前指令
+	 * 设置当前收款指令
 	 * 
 	 * */
-	public static void setCommand(Context ctx, Command cmd) {
-		SharedPreferences sp = ctx.getSharedPreferences(getCurrentUserInfo(ctx)
-				.getUserName(), Activity.MODE_PRIVATE);
-		Editor editor = sp.edit();
-		editor.putString(COMMAND_TRANS_CODE, cmd.getTransCode());
-		editor.putString(COMMAND_MYCARD, cmd.getHuanKuanCard());
-		editor.putString(COMMAND_YOURCARD, cmd.getShouKuanCard());
-		editor.putInt(COMMAND_TRANS_COUNT, cmd.getTransCount());
-		editor.putString(COMMAND_TRANS_STATE, cmd.getTransState());
-
-		editor.commit();
-
+	public static void setShouCommand(JPayApplication app, Command cmd) {
+		SPAdapter.setShouCommand(app, cmd, getCurrentUserInfo(app).getUserName());
+	}
+	
+	
+	/**
+	 * 获取当前还款指令
+	 * 
+	 * */
+	public static Command getHuanCommand(JPayApplication app) {
+		return SPAdapter.getHuanCommand(app, getCurrentUserInfo(app).getUserName());
 	}
 
 	/**
-	 * 重置当前指令
+	 * 设置当前还款指令
 	 * 
 	 * */
-	public static void resetCommand(Context ctx) {
-		SharedPreferences sp = ctx.getSharedPreferences(getCurrentUserInfo(ctx)
-				.getUserName(), Activity.MODE_PRIVATE);
-		sp.edit().clear().commit();
+	public static void setHuanCommand(JPayApplication app, Command cmd) {
+		SPAdapter.setHuanCommand(app, cmd, getCurrentUserInfo(app).getUserName());
+
 	}
+	
 
 	/**
-	 * 获取当前交易使用的UUID
+	 * 重置当前还款指令
 	 * 
 	 * */
-	public static String getCurrentTransUUID(Context ctx) {
-		SharedPreferences sp = ctx.getSharedPreferences(getCurrentUserInfo(ctx)
-				.getUserName(), Activity.MODE_PRIVATE);
-		return sp.getString(TRANS_UUID, UUID.randomUUID() + "");
+	public static void resetHuanCommand(JPayApplication app) {
+		SPAdapter.resetHuanCommand(app, getCurrentUserInfo(app).getUserName());
 	}
-
 	/**
-	 * 清除当前交易使用的UUID
+	 * 重置当前收款指令
 	 * 
 	 * */
-	public static void clearCurrentTransUUID(Context ctx) {
-		ctx.getSharedPreferences(getCurrentUserInfo(ctx).getUserName(),
-				Activity.MODE_PRIVATE).edit().remove(TRANS_UUID);
-
+	public static void resetShouCommand(JPayApplication app) {
+		SPAdapter.resetShouCommand(app, getCurrentUserInfo(app).getUserName());
 	}
+
 }

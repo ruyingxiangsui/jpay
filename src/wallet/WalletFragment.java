@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import application.JPayApplication;
 
 import com.yunhuirong.jpayapp.R;
 
@@ -30,7 +31,7 @@ public class WalletFragment extends Fragment {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		current_account = SPUtil.getCurrentUserInfo(getActivity()).getUserName();
+		current_account = SPUtil.getCurrentUserInfo((JPayApplication)getActivity().getApplication()).getUserName();
 	}
 
 	@Override
@@ -38,7 +39,7 @@ public class WalletFragment extends Fragment {
 			Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.fragment_wallet, container, false);
 		localTransactionsBtn = (Button) v
-				.findViewById(R.id.localTransactionsBtn);
+				.findViewById(R.id.bt_all_transactions);
 		localWalletCountTv = (TextView) v.findViewById(R.id.localWalletCount);
 		cashBtn = (Button) v.findViewById(R.id.cashBtn);
 		rechargeBtn = (Button) v.findViewById(R.id.rechargeBtn);
@@ -97,7 +98,7 @@ public class WalletFragment extends Fragment {
 	
 	public String getLocalWalletCount(){
 		
-		return "￥"+SPUtil.getAccountOverage(getActivity(), current_account);
+		return "￥"+SPUtil.getAccountOverage((JPayApplication)getActivity().getApplication(), current_account);
 	}
 	
 	

@@ -30,8 +30,8 @@ public class TransUtil implements JPayEngine {
 						item.getTransTime(), item.getTransMyCard(),
 						item.getTransOtherCard() });
 		// 更改当前余额
-		SPUtil.updateAccountOverage(c, item.getTransMyCard(),
-				item.getTransType(), Integer.parseInt(item.getTransCount()));
+		//SPUtil.updateAccountOverage(c, item.getTransMyCard(),
+			//	item.getTransType(), Integer.parseInt(item.getTransCount()));
 
 		DBClose();
 

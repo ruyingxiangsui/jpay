@@ -102,12 +102,12 @@
                 android:textSize="17sp" />
 
             <EditText
-                android:id="@+id/et_register_bankid"
+                android:id="@+id/et_register_bank"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="25dp"
                 android:layout_marginRight="25dp"
-                android:hint="@string/register_bankid"
+                android:hint="@string/register_bank"
                 android:padding="12dp"
                 android:inputType="number"
                 android:textSize="17sp" />

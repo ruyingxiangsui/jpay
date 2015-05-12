@@ -15,7 +15,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.yunhuirong.jpayapp.R;
-
 public class FAQActivity extends Activity {
 
 	private ListView listView;

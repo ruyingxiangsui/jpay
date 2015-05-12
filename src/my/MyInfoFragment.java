@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import application.JPayApplication;
 
 import com.yunhuirong.jpayapp.R;
 
@@ -34,7 +35,7 @@ public class MyInfoFragment extends Fragment {
 		
 		exit = (TextView) v.findViewById(R.id.bt_exit);
 		
-		username.setText(SPUtil.getCurrentUserInfo(getActivity()).getUserName());
+		username.setText(SPUtil.getCurrentUserInfo((JPayApplication)getActivity().getApplication()).getUserName());
 		settings.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
@@ -48,7 +49,7 @@ public class MyInfoFragment extends Fragment {
 		exit.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				SPUtil.logOut(getActivity());
+				SPUtil.logOut((JPayApplication)getActivity().getApplication());
 				getActivity().finish();
 			}
 		});

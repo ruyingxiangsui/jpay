@@ -1,5 +1,6 @@
 package activity;
 
+import util.SPUtil;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
@@ -7,12 +8,12 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import application.JPayApplication;
 
 import com.yunhuirong.jpayapp.R;
 
 public class SettingPasswordActivity extends Activity {
 
-	
 	private Button back;
 	private EditText old_pass;
 	private EditText new_pass;
@@ -30,14 +31,14 @@ public class SettingPasswordActivity extends Activity {
 
 		confirm = (Button) findViewById(R.id.bt_confirm_setting_pass);
 
-		
 		back.setOnClickListener(new View.OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-				inputMethodManager.hideSoftInputFromWindow(SettingPasswordActivity.this
-						.getCurrentFocus().getWindowToken(),
+				inputMethodManager.hideSoftInputFromWindow(
+						SettingPasswordActivity.this.getCurrentFocus()
+								.getWindowToken(),
 						InputMethodManager.HIDE_NOT_ALWAYS);
 				SettingPasswordActivity.this.finish();
 				SettingPasswordActivity.this.finish();
@@ -59,9 +60,11 @@ public class SettingPasswordActivity extends Activity {
 	private boolean check(String old_pass, String new_pass, String renew_pass) {
 		return true;
 	}
-	
-	private void saveNewPass(String pass){
-		
+
+	private void saveNewPass(String pass) {
+		SPUtil.updateAccountPass((JPayApplication) getApplication(), SPUtil
+				.getCurrentUserInfo((JPayApplication) getApplication())
+				.getUserName(), pass);
 	}
 
 }

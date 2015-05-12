@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
+import application.JPayApplication;
 
 import com.yunhuirong.jpayapp.R;
 
@@ -24,7 +25,7 @@ public class LocalTransactionsActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_local_transactions);
 		
-		current_account = SPUtil.getCurrentUserInfo(this).getUserName();
+		current_account = SPUtil.getCurrentUserInfo((JPayApplication)getApplication()).getUserName();
 		
 		listView = (ListView) findViewById(R.id.listview_local_transtions);
 		transUtil = new TransUtil(this);

@@ -13,6 +13,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+import application.JPayApplication;
 
 import com.yunhuirong.jpayapp.R;
 
@@ -33,7 +34,7 @@ public class RechargeActivity extends Activity implements JPayEngine {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_recharge);
 
-		current_account = SPUtil.getCurrentUserInfo(this).getUserName();
+		current_account = SPUtil.getCurrentUserInfo((JPayApplication)getApplication()).getUserName();
 
 		editText = (EditText) findViewById(R.id.recharge_count_edittext);
 		rechargingBtn = (Button) findViewById(R.id.recharging_btn);
@@ -65,6 +66,10 @@ public class RechargeActivity extends Activity implements JPayEngine {
 		if (str == null || str.equals("")) {
 			Toast.makeText(this, "请输入充值金额!", Toast.LENGTH_SHORT).show();
 		} else {
+			// 更新本地余额,插入交易记录
+			SPUtil.updateAccountOverage((JPayApplication)getApplication(), current_account, TRANS_TYPE_RECHARGE,
+					Integer.parseInt(str));
+
 			TransUtil transUtil = new TransUtil(this);
 			SimpleDateFormat sDateFormat = new SimpleDateFormat(
 					"yyyy-MM-dd   hh:mm:ss");

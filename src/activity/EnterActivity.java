@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.Window;
+import application.JPayApplication;
 
 import com.yunhuirong.jpayapp.R;
 
@@ -42,7 +43,7 @@ public class EnterActivity extends Activity {
 	}
 
 	public String checkUser() {
-		return SPUtil.getCurrentUserInfo(this).getUserName();
+		return SPUtil.getCurrentUserInfo((JPayApplication)getApplication()).getUserName();
 	}
 
 }

@@ -1,7 +1,10 @@
 package login;
 
-import util.SPUtil;
 import home.HomeActivity;
+import http.JPayRequestListener;
+import http.JpayApi;
+import http.response.LoginResp;
+import util.SPUtil;
 import activity.RegisterActivity;
 import android.app.Activity;
 import android.content.Context;
@@ -13,10 +16,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
+import application.JPayApplication;
 
 import com.yunhuirong.jpayapp.R;
 
-import entity.UserInfo;
+import entity.CurrentUser;
 
 public class LoginActivity extends Activity {
 
@@ -25,6 +30,8 @@ public class LoginActivity extends Activity {
 	private Button bt_login;
 	private TextView tv_register;
 	private ProgressBar pb_progress;
+	private String name;
+	private String pass;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -41,22 +48,37 @@ public class LoginActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				hideKeyBoard();
-				String name = tv_username.getText().toString();
-				String pass = tv_password.getText().toString();
+				name = tv_username.getText().toString();
+				pass = tv_password.getText().toString();
 				if(name==null||name.equals("")){
 					return;
 				}
 				if(pass==null||pass.equals("")){
 					return;
 				}
-				UserInfo uf = new UserInfo();
-				uf.setUserName(name);
-				uf.setLocalWalletId(name);
-				SPUtil.setCurrentUserInfo(LoginActivity.this, uf);
 				pb_progress.setVisibility(View.VISIBLE);
-				Intent i = new Intent(LoginActivity.this,HomeActivity.class);
-				startActivity(i);
-				LoginActivity.this.finish();
+				JpayApi.login(name, pass, new JPayRequestListener<LoginResp>() {
+					
+					@Override
+					public void onRequestSucceeded(LoginResp data) {
+						CurrentUser uf = new CurrentUser();
+						uf.setUserName(name);
+						SPUtil.setCurrentUserInfo((JPayApplication)getApplication(), uf);
+						
+						Intent i = new Intent(LoginActivity.this,HomeActivity.class);
+						startActivity(i);
+						LoginActivity.this.finish();
+						
+					}
+					
+					@Override
+					public void onRequestFailed(String ex) {
+						Toast.makeText(LoginActivity.this, ex, Toast.LENGTH_SHORT).show();
+						
+					}
+				});
+				
+				
 			}
 		});
 		tv_register.setOnClickListener(new View.OnClickListener() {

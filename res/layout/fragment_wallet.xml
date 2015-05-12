@@ -20,7 +20,7 @@
             android:textSize="20sp" />
 
         <Button
-            android:id="@+id/localTransactionsBtn"
+            android:id="@+id/bt_all_transactions"
             android:layout_width="90dp"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"

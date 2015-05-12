@@ -7,8 +7,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
+public class SectionsPagerAdapter extends FragmentPagerAdapter {
 	private Fragment[] fragments;
 
 	public SectionsPagerAdapter(FragmentManager fm) {

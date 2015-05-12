@@ -15,12 +15,11 @@
             android:layout_width="70dp"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:text="@string/back"
-            android:textSize="14sp"
-            android:textColor="#fff"
             android:background="@drawable/title_btn_back"
-		    />  
-        
+            android:text="@string/back"
+            android:textColor="#fff"
+            android:textSize="14sp" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -31,8 +30,9 @@
     </RelativeLayout>
 
     <FrameLayout
-        android:layout_width="380dp"
-        android:layout_height="242.25dp"
+        android:id="@+id/frame_shoukuan"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_below="@id/bar_shoukuan"
         android:layout_gravity="center"
         android:layout_margin="20dp" >
@@ -48,6 +48,7 @@
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:clickable="true"
+            android:gravity="center"
             android:orientation="vertical"
             android:padding="20dp" >
 
@@ -81,5 +82,15 @@
                 android:width="360dp" />
         </LinearLayout>
     </FrameLayout>
+
+    <Button
+        android:id="@+id/bt_shoukuan_confirm"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_below="@id/frame_shoukuan"
+        android:background="@drawable/rechargebtn"
+        android:text="@string/confirm" />
 
 </RelativeLayout>

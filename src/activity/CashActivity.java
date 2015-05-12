@@ -13,6 +13,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+import application.JPayApplication;
 
 import com.yunhuirong.jpayapp.R;
 
@@ -33,7 +34,7 @@ public class CashActivity extends Activity implements JPayEngine {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_cash);
 		
-		current_account = SPUtil.getCurrentUserInfo(this).getUserName();
+		current_account = SPUtil.getCurrentUserInfo((JPayApplication)this.getApplication()).getUserName();
 		
 		editText = (EditText) findViewById(R.id.cash_count_edittext);
 		button = (Button) findViewById(R.id.cashing_btn);
@@ -67,7 +68,7 @@ public class CashActivity extends Activity implements JPayEngine {
 			Toast.makeText(this, "请输入提现金额", Toast.LENGTH_SHORT).show();
 		} else {
 
-			int count = SPUtil.getAccountOverage(this, current_account);
+			int count = SPUtil.getAccountOverage((JPayApplication) getApplication(), current_account);
 
 			if (count < Integer.valueOf(str)) {
 				Toast.makeText(getApplicationContext(), "余额不足",
@@ -83,9 +84,9 @@ public class CashActivity extends Activity implements JPayEngine {
 			item.setTransTime(time);
 			item.setTransMyCard(current_account);
 
+			SPUtil.updateAccountOverage((JPayApplication)getApplication(), current_account, TRANS_TYPE_CASH, count);
 			TransUtil transUtil = new TransUtil(this);
 			transUtil.insertTrans(item);
-
 			
 
 			Toast.makeText(this, TRANS_TYPE_CASH + str + "成功!",

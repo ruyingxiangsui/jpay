@@ -40,17 +40,16 @@
     <string name="register_sms_code">短信验证码</string>
     <string name="register_phone">手机号</string>
     <string name="register_name">真实姓名</string>
-    <string name="register_bankid">银行卡号</string>
+    <string name="register_bank">银行</string>
     <string name="register_id">身份证号</string>
     <string name="title_activity_setting_password">设置支付密码</string>
-    
     <string name="hint_input_old_password">输入旧密码</string>
     <string name="hint_input_new_password">输入新密码</string>
     <string name="hint_reinput_new_password">再次输入新密码</string>
     <string name="confirm">确认</string>
-    
     <string name="tips">如果第一次设置密码,则不需要输入旧密码</string>
-    
     <string name="exit">退出</string>
+    <string name="title_activity_jni">JniActivity</string>
+    <string name="title_activity_test">TestActivity</string>
 
 </resources>
