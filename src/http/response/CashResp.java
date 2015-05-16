@@ -1,5 +1,5 @@
 package http.response;
 
-public class CashResp {
+public class CashResp extends JpayBaseResp{
 
 }
