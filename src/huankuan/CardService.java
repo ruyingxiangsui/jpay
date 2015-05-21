@@ -20,11 +20,11 @@ import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 
+import util.AesUtil;
 import util.SPUtil;
 import util.StringUtil;
 import util.TransUtil;
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.nfc.cardemulation.HostApduService;
 import android.os.Bundle;
 import android.util.Log;
@@ -50,16 +50,18 @@ public class CardService extends HostApduService implements JPayEngine {
 	private static TransUtil transUtil;
 	private static ApduCommand apduCmd;
 	private static ReplyApduCommand replyCmd = new ReplyApduCommand();
-
+	private static JPayApplication app;
 	private static WeakReference<AccountCallback> mAccountCallback;
 
 	public interface AccountCallback {
 		public void onHuankuanReceived(String count);
 	}
 
-	public static void setCallBack(Context ctx, AccountCallback accountCallback) {
+	public static void setCallBack(JPayApplication ap,
+			AccountCallback accountCallback) {
 		mAccountCallback = new WeakReference<AccountCallback>(accountCallback);
-		transUtil = new TransUtil(ctx);
+		transUtil = new TransUtil(ap);
+		app = ap;
 	}
 
 	@Override
@@ -69,90 +71,102 @@ public class CardService extends HostApduService implements JPayEngine {
 
 	@Override
 	public byte[] processCommandApdu(byte[] commandApdu, Bundle extras) {
-		tmp = SPUtil.getHuanCommand((JPayApplication)getApplication());
+		tmp = SPUtil.getHuanCommand((JPayApplication) getApplication());
+		try {
+			// 如果是SELECT指令
+			if (Arrays.equals(BuildSelectApdu(JPAY_LOYALTY_CARD_AID),
+					commandApdu)) {
+				// SELECT APPLICATION
+				Log.e("card", "card:SELECT 指令通过,返回ok");
+				return SELECT_OK_SW;
+			}
+			// READ BINARY 指令
+			else if ((commandApdu[1] == (byte) 0xB0)
+					&& (commandApdu[2] == (byte) 0x00)) {
+				apduCmd = checkApdu(commandApdu);
 
-		// 如果是SELECT指令
-		if (Arrays.equals(BuildSelectApdu(JPAY_LOYALTY_CARD_AID), commandApdu)) {
-			// SELECT APPLICATION
-			Log.e("card", "card:SELECT 指令通过,返回ok");
-			return SELECT_OK_SW;
-		}
-		// READ BINARY 指令
-		else if ((commandApdu[1] == (byte) 0xB0)
-				&& (commandApdu[2] == (byte) 0x00)) {
-			apduCmd = checkApdu(commandApdu);
+				// 如果指令通过并且本地交易指令的状态为未完成
+				if (apduCmd != null && !STATE_DONE.equals(tmp.getTransState())) {
 
-			// 如果指令通过并且本地交易指令的状态为未完成
-			if (apduCmd != null && !STATE_DONE.equals(tmp.getTransState())) {
+					/** 本地当前交易指令交易号与收到的交易号相同,并且收到收款方的确认 */
+					if (tmp.getTransCode().equals(apduCmd.getCode())
+							&& STATE_DONE.equals(apduCmd.getType())) {
+						tmp.setTransState(STATE_DONE);
+						SPUtil.setHuanCommand(
+								(JPayApplication) getApplication(), tmp);
+						if (tmp.getTransCount() > 0) {
+							mAccountCallback.get().onHuankuanReceived(
+									tmp.getTransCount() + "");
+						}
 
-				/** 本地当前交易指令交易号与收到的交易号相同,并且收到收款方的确认 */
-				if (tmp.getTransCode().equals(apduCmd.getCode())
-						&& STATE_DONE.equals(apduCmd.getType())) {
-					tmp.setTransState(STATE_DONE);
-					SPUtil.setHuanCommand((JPayApplication)getApplication(), tmp);
-					if (tmp.getTransCount() > 0) {
+					}
+					/** 本地当前交易指令交易号为空且交易金額不为0,并且收到收款方收款请求 */
+					else if ((tmp.getTransCode() == null || tmp.getTransCode()
+							.equals(""))
+							&& tmp.getTransCount() > 0
+							&& !STATE_DONE.equals(apduCmd.getType())) {
+						replyCmd.setCard(tmp.getHuanKuanCard());
+						replyCmd.setCode(tmp.getTransCode());
+						replyCmd.setMoney(tmp.getTransCount());
+						replyCmd.setType(STATE_OK);
+
+						tmp.setTransCode(apduCmd.getCode());
+						tmp.setShouKuanCard(apduCmd.getShou());
+
+						SPUtil.setHuanCommand(
+								(JPayApplication) getApplication(), tmp);
+
+						/** 本地余额减少,并添加交易记录 */
+						SPUtil.updateAccountOverage(
+								(JPayApplication) getApplication(),
+								tmp.getHuanKuanCard(), TRANS_TYPE_HUANKUAN,
+								tmp.getTransCount());
+						SimpleDateFormat sDateFormat = new SimpleDateFormat(
+								"yyyy-MM-dd   hh:mm:ss");
+						String time = sDateFormat.format(new java.util.Date());
+						transUtil.insertTrans(new TranstionItem(
+								TRANS_TYPE_HUANKUAN, time, tmp.getTransCount()
+										+ "", tmp.getHuanKuanCard(), tmp
+										.getShouKuanCard()));
+
+						return ConcatArrays(
+								AesUtil.encrypt_AES(gson.toJson(replyCmd),
+										app.getKey(), app.getIv()).getBytes(),
+								SELECT_OK_SW);
+
+					}
+					/** 本地当前交易指令交易号与收到的交易号相同,并且收到收款方的收款请求 */
+					else if (tmp.getTransCode().equals(apduCmd.getCode())
+							&& !STATE_DONE.equals(apduCmd.getType())) {
+						replyCmd.setCard(tmp.getHuanKuanCard());
+						replyCmd.setCode(tmp.getTransCode());
+						replyCmd.setMoney(tmp.getTransCount());
+						replyCmd.setType(STATE_OK);
+						return ConcatArrays(AesUtil.encrypt_AES(gson.toJson(replyCmd),
+								app.getKey(), app.getIv()).getBytes(),
+								SELECT_OK_SW);
+					}
+					/** 本地当前交易指令交易号为空,但收到收款方的完成收款信号 */
+					else if ((tmp.getTransCode() == null || tmp.getTransCode()
+							.equals(""))
+							&& STATE_DONE.equals(apduCmd.getType())) {
+
+						return UNKNOWN_CMD_SW;
+					} else {
+						tmp.setTransState(STATE_DONE);
+						SPUtil.setHuanCommand(
+								(JPayApplication) getApplication(), tmp);
 						mAccountCallback.get().onHuankuanReceived(
 								tmp.getTransCount() + "");
+						return UNKNOWN_CMD_SW;
 					}
-
-				}
-				/** 本地当前交易指令交易号为空且交易金額不为0,并且收到收款方收款请求 */
-				else if ((tmp.getTransCode() == null || tmp.getTransCode()
-						.equals(""))
-						&& tmp.getTransCount() > 0
-						&& !STATE_DONE.equals(apduCmd.getType())) {
-					replyCmd.setCard(tmp.getHuanKuanCard());
-					replyCmd.setCode(tmp.getTransCode());
-					replyCmd.setMoney(tmp.getTransCount());
-					replyCmd.setType(STATE_OK);
-
-					tmp.setTransCode(apduCmd.getCode());
-					tmp.setShouKuanCard(apduCmd.getShou());
-
-					SPUtil.setHuanCommand((JPayApplication)getApplication(), tmp);
-
-					/** 本地余额减少,并添加交易记录 */
-					SPUtil.updateAccountOverage((JPayApplication)getApplication(), tmp.getHuanKuanCard(),
-							TRANS_TYPE_HUANKUAN, tmp.getTransCount());
-					SimpleDateFormat sDateFormat = new SimpleDateFormat(
-							"yyyy-MM-dd   hh:mm:ss");
-					String time = sDateFormat.format(new java.util.Date());
-					transUtil.insertTrans(new TranstionItem(
-							TRANS_TYPE_HUANKUAN, time,
-							tmp.getTransCount() + "", tmp.getHuanKuanCard(),
-							tmp.getShouKuanCard()));
-
-					return ConcatArrays(gson.toJson(replyCmd).getBytes(),
-							SELECT_OK_SW);
-
-				}
-				/** 本地当前交易指令交易号与收到的交易号相同,并且收到收款方的收款请求 */
-				else if (tmp.getTransCode().equals(apduCmd.getCode())
-						&& !STATE_DONE.equals(apduCmd.getType())) {
-					replyCmd.setCard(tmp.getHuanKuanCard());
-					replyCmd.setCode(tmp.getTransCode());
-					replyCmd.setMoney(tmp.getTransCount());
-					replyCmd.setType(STATE_OK);
-					return ConcatArrays(gson.toJson(replyCmd).getBytes(),
-							SELECT_OK_SW);
-				}
-				/** 本地当前交易指令交易号为空,但收到收款方的完成收款信号 */
-				else if ((tmp.getTransCode() == null || tmp.getTransCode()
-						.equals("")) && STATE_DONE.equals(apduCmd.getType())) {
-
-					return UNKNOWN_CMD_SW;
 				} else {
-					tmp.setTransState(STATE_DONE);
-					SPUtil.setHuanCommand((JPayApplication)getApplication(), tmp);
-					mAccountCallback.get().onHuankuanReceived(
-							tmp.getTransCount() + "");
-					return UNKNOWN_CMD_SW;
+
 				}
-			} else {
-
 			}
+		} catch (Exception e) {
+			Log.e("card", e.toString());
 		}
-
 		Log.e("card", "card:无法识别的指令,返回unknown.");
 		return UNKNOWN_CMD_SW;
 
@@ -164,16 +178,16 @@ public class CardService extends HostApduService implements JPayEngine {
 
 		Log.e("card", "card checking:" + str);
 		/**
-		 * 均为16进制 固定部分： 报文头:"00A40400" 4位 报文数据长度:"XXXX" 4位 指令类型:".." 2位
-		 * 交易流水号:"..." 32位 请求交易卡号:"..." 12位 KEY:"xx..." 8位
+		 * 报文头:"00A40400" 2位 报文数据长度:"XXXX" 尾部为JSON数据
 		 * 
 		 * */
 		try {
 			String sHead = str.substring(0, 8);
 			String sDataLen = str.substring(8, 10);
 			String hexStr = str.substring(10);
-			String json = StringUtil.HexStringToString(hexStr);
 
+			String raw = StringUtil.HexStringToString(hexStr);
+			String json = AesUtil.decrypt_AES(raw, app.getKey(), app.getIv());
 			int len = Integer.parseInt(sDataLen, 16);
 			if (GET_APDU_HEADER.equals(sHead) && (len * 2 == hexStr.length())) {
 				ApduCommand apduCmd = gson.fromJson(json, ApduCommand.class);

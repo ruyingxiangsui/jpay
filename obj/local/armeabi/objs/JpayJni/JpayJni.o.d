@@ -47,6 +47,11 @@ obj/local/armeabi/objs/JpayJni/JpayJni.o: jni/JpayJni.c \
  /cygdrive/d/android-ndk-r9c/platforms/android-19/arch-arm/usr/include/linux/fcntl.h \
  /cygdrive/d/android-ndk-r9c/platforms/android-19/arch-arm/usr/include/asm/fcntl.h \
  /cygdrive/d/android-ndk-r9c/platforms/android-19/arch-arm/usr/include/asm-generic/fcntl.h \
+ /cygdrive/d/android-ndk-r9c/platforms/android-19/arch-arm/usr/include/errno.h \
+ /cygdrive/d/android-ndk-r9c/platforms/android-19/arch-arm/usr/include/linux/errno.h \
+ /cygdrive/d/android-ndk-r9c/platforms/android-19/arch-arm/usr/include/asm/errno.h \
+ /cygdrive/d/android-ndk-r9c/platforms/android-19/arch-arm/usr/include/asm-generic/errno.h \
+ /cygdrive/d/android-ndk-r9c/platforms/android-19/arch-arm/usr/include/asm-generic/errno-base.h \
  jni/JpayJni.h \
  /cygdrive/d/android-ndk-r9c/platforms/android-19/arch-arm/usr/include/jni.h
 
@@ -145,6 +150,16 @@ obj/local/armeabi/objs/JpayJni/JpayJni.o: jni/JpayJni.c \
 /cygdrive/d/android-ndk-r9c/platforms/android-19/arch-arm/usr/include/asm/fcntl.h:
 
 /cygdrive/d/android-ndk-r9c/platforms/android-19/arch-arm/usr/include/asm-generic/fcntl.h:
+
+/cygdrive/d/android-ndk-r9c/platforms/android-19/arch-arm/usr/include/errno.h:
+
+/cygdrive/d/android-ndk-r9c/platforms/android-19/arch-arm/usr/include/linux/errno.h:
+
+/cygdrive/d/android-ndk-r9c/platforms/android-19/arch-arm/usr/include/asm/errno.h:
+
+/cygdrive/d/android-ndk-r9c/platforms/android-19/arch-arm/usr/include/asm-generic/errno.h:
+
+/cygdrive/d/android-ndk-r9c/platforms/android-19/arch-arm/usr/include/asm-generic/errno-base.h:
 
 jni/JpayJni.h:
 

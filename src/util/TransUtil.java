@@ -14,11 +14,9 @@ public class TransUtil implements JPayEngine {
 
 	private JPayDBHelper helper = null;
 	private SQLiteDatabase db = null;
-	private Context c;
 
 	public TransUtil(Context context) {
 		helper = new JPayDBHelper(context);
-		c = context;
 	}
 
 	public boolean insertTrans(TranstionItem item) {

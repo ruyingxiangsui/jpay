@@ -124,6 +124,7 @@ public class HuanKuanActivity extends Activity implements
 			@SuppressWarnings("deprecation")
 			@Override
 			public void run() {
+				if("0".equals(count))return;
 				// 通知(对方已收到还款)
 				// 清除当前用户当前交易记录
 				NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);

@@ -2,7 +2,7 @@ package http;
 
 public class JPayUrl {
 
-	//加载本地so库
+	//加载本地so库?
 	
 	static protected String getSmsCodeUrl() {
 		return "http://qserver.chinacloudapp.cn:6060/nfc/smscode/";
@@ -21,7 +21,7 @@ public class JPayUrl {
 	}
 
 	static protected String getRechargeUrl() {
-		return "http://qserver.chinacloudapp.cn:6060/nfc/recharge";
+		return "http://qserver.chinacloudapp.cn:6060/nfc/payments/recharge";
 	}
 
 	static protected String getTransUrl() {

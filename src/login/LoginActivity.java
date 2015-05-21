@@ -33,10 +33,13 @@ public class LoginActivity extends Activity {
 	private String name;
 	private String pass;
 	
+	JPayApplication app;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
+		app = (JPayApplication) getApplication();
 		tv_username = (EditText) findViewById(R.id.et_login_username);
 		tv_password = (EditText) findViewById(R.id.et_login_password);
 		bt_login = (Button) findViewById(R.id.bt_login);
@@ -63,12 +66,13 @@ public class LoginActivity extends Activity {
 					public void onRequestSucceeded(LoginResp data) {
 						CurrentUser uf = new CurrentUser();
 						uf.setUserName(name);
+						uf.setAccessToken(data.accessToken);
 						SPUtil.setCurrentUserInfo((JPayApplication)getApplication(), uf);
+						SPUtil.updateCTime(app, name);
 						
 						Intent i = new Intent(LoginActivity.this,HomeActivity.class);
 						startActivity(i);
 						LoginActivity.this.finish();
-						
 					}
 					
 					@Override

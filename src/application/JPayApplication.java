@@ -7,12 +7,12 @@ public class JPayApplication extends Application {
 		System.loadLibrary("JpayJni");
 	}
 
+
 	/**
-	 * 检查ctime
-	 * 
+	 * 获取ctime
 	 * 
 	 * */
-	public native boolean checkCtime(String file, String savedCtime);
+	public native String getCtime(String file);
 
 	/**
 	 * 获取AES算法的密钥

@@ -1,18 +1,23 @@
 package util;
 
 import java.io.File;
+import java.util.HashMap;
+
+import application.JPayApplication;
 
 import com.google.gson.Gson;
 
-import application.JPayApplication;
 import engine.JPayEngine;
 import entity.Command;
+import entity.Ctimes;
 import entity.CurrentUser;
 import entity.UserInfo;
 
 public class SPAdapter implements JPayEngine {
 
 	static Gson gson = new Gson();
+	// 存储ctime的文件
+	static String ctime = "0x";
 
 	/**
 	 * 得到当前用户信息
@@ -24,7 +29,7 @@ public class SPAdapter implements JPayEngine {
 			String str = FileHelper.readFile(app.getFilesDir() + File.separator
 					+ "current_user");
 			String des = AesUtil.decrypt_AES(str, app.getKey(), app.getIv());
-			ui.setUserName(des);
+			ui = gson.fromJson(des, CurrentUser.class);
 		} catch (Exception e) {
 			ui.setUserName("");
 			e.printStackTrace();
@@ -38,7 +43,7 @@ public class SPAdapter implements JPayEngine {
 	 * */
 	public static void setCurrentUserInfo(JPayApplication app, CurrentUser cu) {
 		try {
-			String src = cu.getUserName();
+			String src = gson.toJson(cu);
 			String des = AesUtil.encrypt_AES(src, app.getKey(), app.getIv());
 			FileHelper.writeFile(app.getFilesDir() + "/current_user", des);
 		} catch (Exception e) {
@@ -65,10 +70,12 @@ public class SPAdapter implements JPayEngine {
 					+ account);
 			if (src == null || src.equals("")) {
 				count = 0;
+			} else {
+				String des = AesUtil
+						.decrypt_AES(src, app.getKey(), app.getIv());
+				UserInfo ui = gson.fromJson(des, UserInfo.class);
+				count = ui.account_overage;
 			}
-			String des = AesUtil.decrypt_AES(src, app.getKey(), app.getIv());
-			UserInfo ui = gson.fromJson(des, UserInfo.class);
-			count = ui.account_overage;
 		} catch (Exception e) {
 			count = 0;
 			e.printStackTrace();
@@ -82,7 +89,6 @@ public class SPAdapter implements JPayEngine {
 	 * */
 	public static void updateAccountOverage(JPayApplication app,
 			String account, String type, int count) {
-
 		try {
 			String src = FileHelper.readFile(app.getFilesDir() + File.separator
 					+ account);
@@ -97,10 +103,9 @@ public class SPAdapter implements JPayEngine {
 			}
 			if (TRANS_TYPE_CASH.equals(type)
 					|| TRANS_TYPE_HUANKUAN.equals(type)) {
-				count = -count;
+				count = (-1) * count;
 			}
 			ui.account_overage += count;
-
 			FileHelper.writeFile(
 					app.getFilesDir() + File.separator + account,
 					AesUtil.encrypt_AES(gson.toJson(ui), app.getKey(),
@@ -119,11 +124,17 @@ public class SPAdapter implements JPayEngine {
 		try {
 			String src = FileHelper.readFile(app.getFilesDir() + File.separator
 					+ account);
-
-			String des = AesUtil.decrypt_AES(src, app.getKey(), app.getIv());
-			UserInfo ui = gson.fromJson(des, UserInfo.class);
-			ui.localpass = pass;
-
+			UserInfo ui = null;
+			if (src == null || src.equals("")) {
+				ui = new UserInfo();
+				ui.uername = account;
+				ui.localpass = pass;
+			} else {
+				String des = AesUtil
+						.decrypt_AES(src, app.getKey(), app.getIv());
+				ui = gson.fromJson(des, UserInfo.class);
+				ui.localpass = pass;
+			}
 			FileHelper.writeFile(
 					app.getFilesDir() + File.separator + account,
 					AesUtil.encrypt_AES(gson.toJson(ui), app.getKey(),
@@ -133,6 +144,11 @@ public class SPAdapter implements JPayEngine {
 		}
 	}
 
+	public static void clearAccountLocalData(JPayApplication app,String account){
+		FileHelper.writeFile(app.getFilesDir() + File.separator
+				+ account,"");
+	}
+	
 	/**
 	 * 验证本地支付密码
 	 * */
@@ -141,10 +157,14 @@ public class SPAdapter implements JPayEngine {
 		try {
 			String src = FileHelper.readFile(app.getFilesDir() + File.separator
 					+ account);
-
+			if (src == null || src.equals("")) {
+				return true;
+			}
 			String des = AesUtil.decrypt_AES(src, app.getKey(), app.getIv());
 			UserInfo ui = gson.fromJson(des, UserInfo.class);
-			return ui.localpass == pass;
+			if (ui.localpass == null || ui.localpass.equals(""))
+				return true;
+			return ui.localpass.equals(pass);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -156,8 +176,34 @@ public class SPAdapter implements JPayEngine {
 	 * 每次更改数据库、xml文件时更新 内容为文件的ctime(文件内容或目录改变时也会修改ctime)
 	 * 
 	 * */
-	public static void updateCTime(JPayApplication app, String filepath) {
+	public static void updateCTime(JPayApplication app, String account) {
+		String ctime = app.getCtime(app.getFilesDir() + File.separator
+				+ account);
+		Ctimes times;
+		String src = FileHelper.readFile(app.getFilesDir() + File.separator
+				+ CTIME_FILE);
+		try {
+			if (src == null || src.equals("")) {
+				times = new Ctimes();
+				times.ctimes = new HashMap<String, String>();
+				times.ctimes.put(account, ctime);
+			} else {
+				String des = AesUtil
+						.decrypt_AES(src, app.getKey(), app.getIv());
+				times = gson.fromJson(des, Ctimes.class);
+				if (times.ctimes == null) {
+					times.ctimes = new HashMap<String, String>();
+				}
+				times.ctimes.put(account, ctime);
 
+			}
+			FileHelper.writeFile(
+					app.getFilesDir() + File.separator + CTIME_FILE,
+					AesUtil.encrypt_AES(gson.toJson(times), app.getKey(),
+							app.getIv()));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -165,15 +211,25 @@ public class SPAdapter implements JPayEngine {
 	 * 
 	 * */
 	public static boolean checkAccountCTime(JPayApplication app, String account) {
-		return false;
-	}
-
-	/**
-	 * 需调用本地方法!!!!!
-	 * 
-	 * */
-	public static final String getFileCTime(String path) {
-		return "";
+		String ctime = app.getCtime(app.getFilesDir() + File.separator
+				+ account);
+		String src = FileHelper.readFile(app.getFilesDir() + File.separator
+				+ CTIME_FILE);
+		boolean flag = false;
+		try {
+			if (src == null || src.equals("")) {
+				flag = false;
+			} else {
+				String des = AesUtil
+						.decrypt_AES(src, app.getKey(), app.getIv());
+				flag = ctime.equals(gson.fromJson(des, Ctimes.class).ctimes
+						.get(account));
+			}
+		} catch (Exception e) {
+			flag = false;
+			e.printStackTrace();
+		}
+		return flag;
 	}
 
 	/**
@@ -248,7 +304,7 @@ public class SPAdapter implements JPayEngine {
 			return cmd;
 		} catch (Exception e) {
 			e.printStackTrace();
-			return null;
+			return new Command();
 		}
 	}
 

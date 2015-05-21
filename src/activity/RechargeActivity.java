@@ -1,5 +1,9 @@
 package activity;
 
+import http.JPayRequestListener;
+import http.JpayApi;
+import http.response.RechargeResp;
+
 import java.text.SimpleDateFormat;
 
 import util.SPUtil;
@@ -28,13 +32,15 @@ public class RechargeActivity extends Activity implements JPayEngine {
 	private Button back;
 
 	private String current_account;
+	private JPayApplication app;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_recharge);
-
-		current_account = SPUtil.getCurrentUserInfo((JPayApplication)getApplication()).getUserName();
+		app = (JPayApplication) getApplication();
+		current_account = SPUtil.getCurrentUserInfo(
+				(JPayApplication) getApplication()).getUserName();
 
 		editText = (EditText) findViewById(R.id.recharge_count_edittext);
 		rechargingBtn = (Button) findViewById(R.id.recharging_btn);
@@ -62,27 +68,50 @@ public class RechargeActivity extends Activity implements JPayEngine {
 	}
 
 	private void startRecharging() {
-		String str = editText.getText().toString();
+		final String str = editText.getText().toString();
 		if (str == null || str.equals("")) {
 			Toast.makeText(this, "请输入充值金额!", Toast.LENGTH_SHORT).show();
 		} else {
-			// 更新本地余额,插入交易记录
-			SPUtil.updateAccountOverage((JPayApplication)getApplication(), current_account, TRANS_TYPE_RECHARGE,
-					Integer.parseInt(str));
+			rechargingBtn.setClickable(false);
+			JpayApi.recharge(SPUtil.getCurrentUserInfo(app).getAccessToken(),
+					Integer.parseInt(str), "",
+					new JPayRequestListener<RechargeResp>() {
 
-			TransUtil transUtil = new TransUtil(this);
-			SimpleDateFormat sDateFormat = new SimpleDateFormat(
-					"yyyy-MM-dd   hh:mm:ss");
-			String time = sDateFormat.format(new java.util.Date());
-			TranstionItem item = new TranstionItem();
-			item.setTransType(TRANS_TYPE_RECHARGE);
-			item.setTransTime(time);
-			item.setTransCount(str);
-			item.setTransMyCard(current_account);
-			transUtil.insertTrans(item);
+						@Override
+						public void onRequestSucceeded(RechargeResp data) {
+							// 更新本地余额,插入交易记录
+							SPUtil.updateAccountOverage(
+									(JPayApplication) getApplication(),
+									current_account, TRANS_TYPE_RECHARGE,
+									Integer.parseInt(str));
 
-			Toast.makeText(this, "充值成功!", Toast.LENGTH_SHORT).show();
-			editText.setText("");
+							TransUtil transUtil = new TransUtil(
+									getApplicationContext());
+							SimpleDateFormat sDateFormat = new SimpleDateFormat(
+									"yyyy-MM-dd   hh:mm:ss");
+							String time = sDateFormat
+									.format(new java.util.Date());
+							TranstionItem item = new TranstionItem();
+							item.setTransType(TRANS_TYPE_RECHARGE);
+							item.setTransTime(time);
+							item.setTransCount(str);
+							item.setTransMyCard(current_account);
+							transUtil.insertTrans(item);
+
+							Toast.makeText(getApplicationContext(), "充值成功!",
+									Toast.LENGTH_SHORT).show();
+							editText.setText("");
+							rechargingBtn.setClickable(true);
+						}
+
+						@Override
+						public void onRequestFailed(String ex) {
+							Toast.makeText(getApplicationContext(),
+									"充值失败!" + ex, Toast.LENGTH_SHORT).show();
+							rechargingBtn.setClickable(true);
+						}
+					});
+
 		}
 	}
 

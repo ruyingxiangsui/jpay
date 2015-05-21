@@ -5,7 +5,6 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 import android.util.Base64;
-import android.util.Log;
 
 public class AesUtil {
 	/**
@@ -57,7 +56,7 @@ public class AesUtil {
 	public static String decrypt_AES(String src, byte[] b_key, byte[] b_iv)
 			throws Exception {
 		if (b_key == null) {
-			return "key不能为空！";
+			return null;
 		}
 
 		SecretKeySpec keyspec = new SecretKeySpec(b_key, "AES");

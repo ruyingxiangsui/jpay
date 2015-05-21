@@ -7,29 +7,26 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-/*
- * Class:     application_JPayApplication
- * Method:    checkCtime
- * Signature: (Ljava/lang/String;Ljava/lang/String;)Z
- */
-JNIEXPORT jboolean JNICALL Java_application_JPayApplication_checkCtime
-  (JNIEnv *, jobject, jstring, jstring);
+
+
+JNIEXPORT jstring JNICALL Java_application_JPayApplication_getCtime(JNIEnv *,
+		jobject, jstring);
 
 /*
  * Class:     application_JPayApplication
  * Method:    getKey
  * Signature: ()[B
  */
-JNIEXPORT jbyteArray JNICALL Java_application_JPayApplication_getKey
-  (JNIEnv *, jobject);
+JNIEXPORT jbyteArray JNICALL Java_application_JPayApplication_getKey(JNIEnv *,
+		jobject);
 
 /*
  * Class:     application_JPayApplication
  * Method:    getIv
  * Signature: ()[B
  */
-JNIEXPORT jbyteArray JNICALL Java_application_JPayApplication_getIv
-  (JNIEnv *, jobject);
+JNIEXPORT jbyteArray JNICALL Java_application_JPayApplication_getIv(JNIEnv *,
+		jobject);
 
 #ifdef __cplusplus
 }

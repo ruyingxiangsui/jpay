@@ -1,0 +1,49 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/bar_net_transtions"
+        android:layout_width="fill_parent"
+        android:layout_height="45dp"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/title_bar"
+        android:gravity="center_vertical" >
+
+        <Button
+            android:id="@+id/trans_net_back"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="@string/back"
+            android:textSize="14sp"
+            android:textColor="#fff"
+            android:background="@drawable/title_btn_back"
+		    />  
+        
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/net_trans"
+            android:textColor="#ffffff"
+            android:textSize="20sp" />
+    </RelativeLayout>
+    <TextView android:id="@+id/next_page"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/next_page"
+        android:textSize="18sp"
+        android:background="@drawable/info_center_item"
+        android:gravity="center"
+        android:padding="8dp"
+        android:layout_alignParentBottom="true"/>
+    <ListView 
+        android:id="@+id/listview_net_transtions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/bar_net_transtions"
+        android:layout_above="@id/next_page"/>
+
+</RelativeLayout>

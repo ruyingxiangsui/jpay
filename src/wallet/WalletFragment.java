@@ -3,7 +3,7 @@ package wallet;
 import util.SPUtil;
 import activity.CashActivity;
 import activity.FAQActivity;
-import activity.LocalTransactionsActivity;
+import activity.NetTransActivity;
 import activity.RechargeActivity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,7 +19,7 @@ import com.yunhuirong.jpayapp.R;
 
 public class WalletFragment extends Fragment {
 
-	private Button localTransactionsBtn;
+	private Button netTransactionsBtn;
 	private TextView localWalletCountTv;
 
 	private Button cashBtn;
@@ -38,8 +38,8 @@ public class WalletFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.fragment_wallet, container, false);
-		localTransactionsBtn = (Button) v
-				.findViewById(R.id.bt_all_transactions);
+		netTransactionsBtn = (Button) v
+				.findViewById(R.id.bt_net_transactions);
 		localWalletCountTv = (TextView) v.findViewById(R.id.localWalletCount);
 		cashBtn = (Button) v.findViewById(R.id.cashBtn);
 		rechargeBtn = (Button) v.findViewById(R.id.rechargeBtn);
@@ -47,13 +47,13 @@ public class WalletFragment extends Fragment {
 
 		localWalletCountTv.setText(getLocalWalletCount());
 		
-		/** 显示本地交易记录 */
-		localTransactionsBtn.setOnClickListener(new View.OnClickListener() {
+		/** 显示联网交易记录 */
+		netTransactionsBtn.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
 				Intent i = new Intent(getActivity(),
-						LocalTransactionsActivity.class);
+						NetTransActivity.class);
 				startActivity(i);
 			}
 		});

@@ -38,7 +38,9 @@ public abstract class JpayRequest<T extends JpayBaseResp> {
 			strResp = http.HttpClient.post(url, headers, params);
 			break;
 		case GET:
-			strResp = http.HttpClient.get(url, params);
+			strResp = http.HttpClient.get(url,headers, params);
+			break;
+		case PUT:
 			break;
 		}
 

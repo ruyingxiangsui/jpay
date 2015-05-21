@@ -95,6 +95,7 @@ public class RegisterActivity extends Activity {
 								public void onRequestSucceeded(RegisterResp data) {
 									CurrentUser uf = new CurrentUser();
 									uf.setUserName(phone);
+									uf.setAccessToken(data.accessToken);
 									SPUtil.setCurrentUserInfo(
 											(JPayApplication)getApplication(), uf);
 									Intent i = new Intent(

@@ -92,6 +92,7 @@ public class ShouKuanActivity extends Activity implements
 			@SuppressWarnings("deprecation")
 			@Override
 			public void run() {
+				if("0".equals(count))return;
 				tvReceivedCount.setText(count);
 				// 通知用户收款成功
 				NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);

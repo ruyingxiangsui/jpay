@@ -1,6 +1,7 @@
 package my;
 
 import util.SPUtil;
+import activity.LocalTransactionsActivity;
 import activity.SettingPasswordActivity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,7 +18,7 @@ public class MyInfoFragment extends Fragment {
 	
 	private TextView username;
 	private TextView settings;
-	
+	private TextView all_trans;
 	private TextView exit;
 	
 	@Override
@@ -32,7 +33,7 @@ public class MyInfoFragment extends Fragment {
 		View v = inflater.inflate(R.layout.fragment_my, container, false);
 		username = (TextView)v.findViewById(R.id.tv_username);
 		settings = (TextView)v.findViewById(R.id.tv_settings);
-		
+		all_trans = (TextView)v.findViewById(R.id.all_trans);
 		exit = (TextView) v.findViewById(R.id.bt_exit);
 		
 		username.setText(SPUtil.getCurrentUserInfo((JPayApplication)getActivity().getApplication()).getUserName());
@@ -45,7 +46,15 @@ public class MyInfoFragment extends Fragment {
 			}
 		});
 		
-		
+		all_trans.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Intent i = new Intent(getActivity(),
+						LocalTransactionsActivity.class);
+				startActivity(i);
+			}
+		});
 		exit.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {

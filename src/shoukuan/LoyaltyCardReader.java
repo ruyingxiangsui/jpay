@@ -15,17 +15,16 @@
  */
 package shoukuan;
 
-import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Random;
 
+import util.AesUtil;
 import util.SPUtil;
 import util.StringUtil;
 import util.TransUtil;
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.nfc.tech.IsoDep;
@@ -100,8 +99,8 @@ public class LoyaltyCardReader implements NfcAdapter.ReaderCallback, JPayEngine 
 						apduCmd.setShou(tmp.getShouKuanCard());
 						apduCmd.setType(tmp.getTransState());
 						apduCmd.setKey(JPAY_KEY);
-						String hexStr = StringUtil.StringToHexString(gson
-								.toJson(apduCmd));
+						String hexStr = StringUtil.StringToHexString(AesUtil.encrypt_AES(gson
+								.toJson(apduCmd), app.getKey(), app.getIv()));
 						isoDep.transceive(BuildGetApdu(hexStr));
 
 						return;// 不行换goto
@@ -112,8 +111,8 @@ public class LoyaltyCardReader implements NfcAdapter.ReaderCallback, JPayEngine 
 						apduCmd.setKey(JPAY_KEY);
 						apduCmd.setType(tmp.getTransState());
 						Log.e("reader", "reader:" + gson.toJson(apduCmd));
-						String hexStr = StringUtil.StringToHexString(gson
-								.toJson(apduCmd));
+						String hexStr = StringUtil.StringToHexString(AesUtil.encrypt_AES(gson
+								.toJson(apduCmd), app.getKey(), app.getIv()));
 						byte[] result = isoDep.transceive(BuildGetApdu(hexStr));
 						int resultLength = result.length;
 						byte[] statusWord = { result[resultLength - 2],
@@ -124,7 +123,7 @@ public class LoyaltyCardReader implements NfcAdapter.ReaderCallback, JPayEngine 
 								+ ByteArrayToHexString(payload));
 						if (Arrays.equals(SELECT_OK_SW, statusWord)) {
 							String str = new String(payload);
-							replyCmd = gson.fromJson(str,
+							replyCmd = gson.fromJson(AesUtil.decrypt_AES(str, app.getKey(), app.getIv()),
 									ReplyApduCommand.class);
 							tmp.setHuanKuanCard(replyCmd.getCard());
 							tmp.setTransCount(replyCmd.getMoney());
@@ -152,8 +151,8 @@ public class LoyaltyCardReader implements NfcAdapter.ReaderCallback, JPayEngine 
 							apduCmd.setShou(tmp.getShouKuanCard());
 							apduCmd.setType(tmp.getTransState());
 							apduCmd.setKey(JPAY_KEY);
-							String hexstr = StringUtil.StringToHexString(gson
-									.toJson(apduCmd));
+							String hexstr = StringUtil.StringToHexString(AesUtil.encrypt_AES(gson
+									.toJson(apduCmd), app.getKey(), app.getIv()));
 							isoDep.transceive(BuildGetApdu(hexstr));
 						}
 						return;
@@ -162,7 +161,7 @@ public class LoyaltyCardReader implements NfcAdapter.ReaderCallback, JPayEngine 
 
 					Log.e("reader", "reader select not ok");
 				}
-			} catch (IOException e) {
+			} catch (Exception e) {
 				Log.e(TAG, "Error communicating with card: " + e.toString());
 			}
 		}

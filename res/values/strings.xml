@@ -51,5 +51,11 @@
     <string name="exit">退出</string>
     <string name="title_activity_jni">JniActivity</string>
     <string name="title_activity_test">TestActivity</string>
+    <string name="title_activity_ctime">CtimeActivity</string>
+    <string name="title_activity_net_trans">充值与提现记录</string>
+    <string name="all_trans_record">交易记录</string>
+    <string name="net_trans">联网交易</string>
+    <string name="next_page">下一页</string>
+    <string name="title_activity_signature">SignatureActivity</string>
 
 </resources>

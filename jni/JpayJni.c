@@ -2,18 +2,21 @@
 #include<sys/stat.h>
 #include<unistd.h>
 #include<fcntl.h>
+#include <errno.h>
 #include"JpayJni.h"
 
 /*
  *16字节
  *
  * */
-const char keyValue[] = { 21, 25, 21, -45, 25, 98, -55, -45, 10, 35, -45, 35,
+const char keyValue[] = { 21, 33, 21, -45, 25, 98, -55, -45, 10, 35, -45, 35,
 		26, -5, 25, -65, };
 
 const char iv[] = { -33, 32, -25, 25, 35, -27, 55, -12, -15, 32, 23, 45, -26,
 		32, 5, 16 };
-const int jpay_signature_hash = 1532883504;
+//1532883504
+//-1642232357
+const int jpay_signature_hash = -1642232357;
 /*
  * Class:     application_JPayApplication
  * Method:    getKey
@@ -21,7 +24,9 @@ const int jpay_signature_hash = 1532883504;
  */
 JNIEXPORT jbyteArray JNICALL Java_application_JPayApplication_getKey(
 		JNIEnv *env, jobject obj) {
-	checkSignature(env, obj);
+	if (!checkSignature(env, obj)) {
+		return NULL;
+	}
 	jbyteArray kvArray = (*env)->NewByteArray(env, sizeof(keyValue));
 	jbyte *bytes = (*env)->GetByteArrayElements(env, kvArray, 0);
 
@@ -43,7 +48,9 @@ JNIEXPORT jbyteArray JNICALL Java_application_JPayApplication_getKey(
  */
 JNIEXPORT jbyteArray JNICALL Java_application_JPayApplication_getIv(JNIEnv *env,
 		jobject obj) {
-	checkSignature(env, obj);
+	if (!checkSignature(env, obj)) {
+		return NULL;
+	}
 	jbyteArray ivArray = (*env)->NewByteArray(env, sizeof(iv));
 	jbyte *bytes = (*env)->GetByteArrayElements(env, ivArray, 0);
 
@@ -58,14 +65,23 @@ JNIEXPORT jbyteArray JNICALL Java_application_JPayApplication_getIv(JNIEnv *env,
 	return ivArray;
 }
 
-/*
- * Class:     application_JPayApplication
- * Method:    checkCtime
- * Signature: (Ljava/lang/String;Ljava/lang/String;)Z
- */
-JNIEXPORT jboolean JNICALL Java_application_JPayApplication_checkCtime(
-		JNIEnv *env, jobject thiz, jstring file_path, jstring saved_ctime) {
-	return checkSignature(env, thiz) == 1;
+
+
+JNIEXPORT jstring JNICALL Java_application_JPayApplication_getCtime(JNIEnv *env,
+		jobject thiz, jstring file_path) {
+	struct stat buf;
+	//"/data/data/com.yunhuirong.jpayapp/files/q"
+
+	char* s = (*env)->GetStringUTFChars(env, file_path, 0);
+	int res = stat(s, &buf);
+	if (res == 0) {
+		char tmp[32];
+		sprintf(tmp,"%ld",buf.st_ctime);
+		return (*env)->NewStringUTF(env, tmp);
+	} else {
+		return NULL;
+	}
+
 }
 
 int checkSignature(JNIEnv *env, jobject thiz) {
@@ -88,7 +104,8 @@ int checkSignature(JNIEnv *env, jobject thiz) {
 
 	// 获得应用包的信息
 	jobject package_info = (*env)->CallObjectMethod(env, package_manager,
-			methodID_pm, (*env)->NewStringUTF(env, "com.yunhuirong.jpayapp"), 64);
+			methodID_pm, (*env)->NewStringUTF(env, "com.yunhuirong.jpayapp"),
+			64);
 
 	// 获得 PackageInfo 类
 	jclass pi_clazz = (*env)->GetObjectClass(env, package_info);

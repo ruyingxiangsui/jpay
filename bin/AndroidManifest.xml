@@ -37,8 +37,7 @@
             </intent-filter>
             <!--
                  Required XML configuration file, listing the AIDs that we are emulating cards
-                 for. This defines what protocols our card emulation service supports.
-            -->
+                 for. This defines what protocols our card emulation service supports.            -->
             <meta-data
                 android:name="android.nfc.cardemulation.host_apdu_service"
                 android:resource="@xml/aid_list" />
@@ -121,10 +120,10 @@
             android:label="@string/title_activity_enter"
             android:theme="@style/enterTheme" >
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
         </activity>
         <activity
             android:name="activity.SettingPasswordActivity"
@@ -132,9 +131,21 @@
             android:theme="@style/enterTheme" >
         </activity>
         <activity
-            android:name="test.JniActivity"
-            android:label="@string/title_activity_jni" >
+            android:name=".CtimeActivity"
+            android:label="@string/title_activity_ctime" >
         </activity>
+        <activity
+            android:name="activity.NetTransActivity"
+            android:label="@string/title_activity_net_trans"
+            android:theme="@style/activityTheme" >
+        </activity>
+        <activity
+            android:name=".SignatureActivity"
+            android:label="@string/title_activity_signature" >
+            
+        </activity>
+
+        
     </application>
 
 </manifest>

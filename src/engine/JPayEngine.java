@@ -82,5 +82,7 @@ public interface JPayEngine {
 	static final String APDU_TYPE_REQUEST = "AA00";
 	static final String APDU_TYPE_DOING = "AA01";
 	static final String APDU_TYPE_DONE = "AA02";
+	
+	static final String CTIME_FILE = "checkfile";
 
 }
