@@ -83,9 +83,10 @@ containing a value of this type.
         public static final int wallet=0x7f020017;
     }
     public static final class id {
-        public static final int FAQ=0x7f0a004c;
-        public static final int action_settings=0x7f0a0053;
+        public static final int FAQ=0x7f0a004d;
+        public static final int action_settings=0x7f0a0054;
         public static final int all_trans=0x7f0a0045;
+        public static final int balance=0x7f0a0046;
         public static final int bar_cash=0x7f0a0000;
         public static final int bar_faqs=0x7f0a0009;
         public static final int bar_huankuan=0x7f0a0011;
@@ -95,12 +96,12 @@ containing a value of this type.
         public static final int bar_recharge=0x7f0a0028;
         public static final int bar_register=0x7f0a002c;
         public static final int bar_shoukuan=0x7f0a003b;
-        public static final int bar_wallet=0x7f0a0047;
+        public static final int bar_wallet=0x7f0a0048;
         public static final int bt_confirm_setting_pass=0x7f0a003a;
-        public static final int bt_exit=0x7f0a0046;
+        public static final int bt_exit=0x7f0a0047;
         public static final int bt_get_sms_code=0x7f0a002f;
         public static final int bt_login=0x7f0a0021;
-        public static final int bt_net_transactions=0x7f0a0048;
+        public static final int bt_net_transactions=0x7f0a0049;
         public static final int bt_register=0x7f0a0034;
         public static final int bt_setting_password__back=0x7f0a0036;
         public static final int bt_shoukuan_confirm=0x7f0a003f;
@@ -112,7 +113,7 @@ containing a value of this type.
         public static final int card_account_field=0x7f0a0016;
         public static final int card_account_label=0x7f0a0015;
         public static final int card_title=0x7f0a0014;
-        public static final int cashBtn=0x7f0a004b;
+        public static final int cashBtn=0x7f0a004c;
         public static final int cash_back=0x7f0a0001;
         public static final int cash_count_edittext=0x7f0a0002;
         public static final int cashing_btn=0x7f0a0003;
@@ -130,8 +131,8 @@ containing a value of this type.
         public static final int et_register_real_name=0x7f0a0031;
         public static final int et_reinput_new_pass=0x7f0a0039;
         public static final int faqs_back=0x7f0a000a;
-        public static final int faqs_item_content=0x7f0a004e;
-        public static final int faqs_item_title=0x7f0a004d;
+        public static final int faqs_item_content=0x7f0a004f;
+        public static final int faqs_item_title=0x7f0a004e;
         public static final int frame_shoukuan=0x7f0a003d;
         public static final int huankuan_back=0x7f0a0012;
         public static final int huankuan_frame=0x7f0a0013;
@@ -143,10 +144,10 @@ containing a value of this type.
         public static final int listview_faqs=0x7f0a000b;
         public static final int listview_local_transtions=0x7f0a001d;
         public static final int listview_net_transtions=0x7f0a0027;
-        public static final int localWalletCount=0x7f0a0049;
+        public static final int localWalletCount=0x7f0a004a;
         public static final int next_page=0x7f0a0026;
         public static final int pb_login=0x7f0a0023;
-        public static final int rechargeBtn=0x7f0a004a;
+        public static final int rechargeBtn=0x7f0a004b;
         public static final int recharge_back=0x7f0a0029;
         public static final int recharge_count_edittext=0x7f0a002a;
         public static final int recharging_btn=0x7f0a002b;
@@ -157,11 +158,11 @@ containing a value of this type.
         public static final int text=0x7f0a0008;
         public static final int trans_back=0x7f0a001c;
         public static final int trans_net_back=0x7f0a0025;
-        public static final int transactions=0x7f0a0054;
-        public static final int transtion_item_count=0x7f0a0050;
-        public static final int transtion_item_count_layout=0x7f0a004f;
-        public static final int transtion_item_time=0x7f0a0052;
-        public static final int transtion_item_type=0x7f0a0051;
+        public static final int transactions=0x7f0a0055;
+        public static final int transtion_item_count=0x7f0a0051;
+        public static final int transtion_item_count_layout=0x7f0a0050;
+        public static final int transtion_item_time=0x7f0a0053;
+        public static final int transtion_item_type=0x7f0a0052;
         public static final int tv_login=0x7f0a0035;
         public static final int tv_received_count=0x7f0a003e;
         public static final int tv_register=0x7f0a0022;
@@ -216,6 +217,7 @@ containing a value of this type.
         public static final int all_trans_record=0x7f070034;
         public static final int app_name=0x7f070000;
         public static final int back=0x7f07001a;
+        public static final int balance=0x7f070035;
         public static final int card_title=0x7f070003;
         public static final int cash=0x7f07000c;
         public static final int cash_count_edit_hint=0x7f070018;
@@ -232,8 +234,8 @@ containing a value of this type.
         public static final int jiaoyi=0x7f07001c;
         public static final int localTransactions=0x7f070011;
         public static final int my_info=0x7f070019;
-        public static final int net_trans=0x7f070035;
-        public static final int next_page=0x7f070036;
+        public static final int net_trans=0x7f070036;
+        public static final int next_page=0x7f070037;
         public static final int password=0x7f07001f;
         public static final int phone_number=0x7f07001e;
         public static final int picturedes=0x7f070014;
@@ -261,7 +263,7 @@ containing a value of this type.
         public static final int title_activity_recharge=0x7f07000e;
         public static final int title_activity_register=0x7f070020;
         public static final int title_activity_setting_password=0x7f070029;
-        public static final int title_activity_signature=0x7f070037;
+        public static final int title_activity_signature=0x7f070038;
         public static final int title_activity_test=0x7f070031;
         public static final int title_activity_wallet=0x7f070010;
         public static final int title_wallet=0x7f070013;
