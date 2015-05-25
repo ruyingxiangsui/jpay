@@ -95,7 +95,7 @@ public class SPAdapter implements JPayEngine {
 			UserInfo ui;
 			if (src == null || src.equals("")) {
 				ui = new UserInfo();
-				ui.uername = account;
+				ui.username = account;
 			} else {
 				String des = AesUtil
 						.decrypt_AES(src, app.getKey(), app.getIv());
@@ -127,7 +127,7 @@ public class SPAdapter implements JPayEngine {
 			UserInfo ui = null;
 			if (src == null || src.equals("")) {
 				ui = new UserInfo();
-				ui.uername = account;
+				ui.username = account;
 				ui.localpass = pass;
 			} else {
 				String des = AesUtil

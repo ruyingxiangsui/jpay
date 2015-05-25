@@ -25,7 +25,7 @@ public class RegisterActivity extends Activity {
 
 	private Button btRegister;
 	private TextView tvLogin;
-
+	private Button btSmscode;
 	private EditText etPhone;
 	private EditText etPass;
 	private EditText etsmsCode;
@@ -46,8 +46,8 @@ public class RegisterActivity extends Activity {
 
 		btRegister = (Button) findViewById(R.id.bt_register);
 		tvLogin = (TextView) findViewById(R.id.tv_login);
-
-		etsmsCode.setOnClickListener(new View.OnClickListener() {
+		btSmscode = (Button) findViewById(R.id.bt_get_sms_code);
+		btSmscode.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {

@@ -109,7 +109,7 @@
                 android:layout_marginRight="25dp"
                 android:hint="@string/register_bank"
                 android:padding="12dp"
-                android:inputType="number"
+                android:inputType="text"
                 android:textSize="17sp" />
 
             <EditText

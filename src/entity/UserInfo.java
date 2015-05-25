@@ -2,7 +2,7 @@ package entity;
 
 public class UserInfo {
 	//用户基本信息
-	public String uername;
+	public String username;
 	public String localpass;// 本地支付密码
 	public int account_overage;//余额
 
